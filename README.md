@@ -4,17 +4,19 @@
 
 I was browsing Reddit a little bit...
 
-!(https://github.com/dj66635/mtga-code-grabber/robophobia.png)
-!(https://github.com/dj66635/mtga-code-grabber/robophobia2.png)
-!(https://github.com/dj66635/mtga-code-grabber/robophobia3.png)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia.PNG)
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia2.PNG)
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia3.PNG)
 
 Robo-phobia is running rampant. F*ck these fools, I say.
 
-!(https://github.com/dj66635/mtga-code-grabber/touching.png)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/touching.PNG)
 
-Oh, that's so touching.
+Oh, that's so touching. ❤️
 
-!(https://github.com/dj66635/mtga-code-grabber/lmao_no.png)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/lmao_no.PNG)
 
 No?
 
@@ -26,7 +28,7 @@ This project leverages Google's open source OCR Tesseract for text recognition. 
 
 ### 2. Fill in the configuration file
 
-MTGA Code Grabber :tm: connects to Reddit and Discord to get its inputs, and to Wizards website to claim the codes. Which means you need to create a `config.ini` file in the root folder of the project and set your credentials in it. Luckyly, I provide a sample for you [`example.config.ini`](https://github.com/dj66635/mtga-code-grabber/example.config.ini). Let's go over it quickly.
+MTGA Code Grabber :tm: connects to Reddit and Discord to get its inputs, and to Wizards website to claim the codes. Which means you need to create a `config.ini` file in the root folder of the project and set your credentials in it. Luckyly, I provide a sample for you [`example.config.ini`](https://github.com/dj66635/mtga-code-grabber/blob/main/example.config.ini). Let's go over it quickly.
 
 ```
 [Reddit]
@@ -51,7 +53,7 @@ Reddit's `client_id` and `client_secret` are your Reddit API credentials. If you
 
 `subreddit_names` is a comma-separated list of the subreddits you want to monitor. Don't you dare put a whitespace in this field.
 
-Discord's `auth_token` is your Discord's authorization token. Pretty straightforward, huh?. If you don't know how to do a Google search, don't worry, [I've got you covered](https://www.androidauthority.com/get-discord-token-3149920/).
+Discord's `auth_token` is your Discord's authorization token. Pretty straightforward, huh? If you don't know how to do a Google search, don't worry, [I've got you covered](https://www.androidauthority.com/get-discord-token-3149920/).
 
 `channel_ids` is a comma-separated list of the channels you wish to monitor. You need to have Developer mode enabled to see this information. You'll figure it out.
 
@@ -63,12 +65,12 @@ Discord's `auth_token` is your Discord's authorization token. Pretty straightfor
 
 ### 4. Run it
 
-Install the required packages
+Install the required packages.
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
-You're ready. Run the program on a terminal. Fingers crossed.
+You're ready. Run the program on a terminal. 🤞
 ```
 python main.py
 ```
@@ -78,6 +80,6 @@ python main.py
 ### 6. Profit
 
 ## Hard mode
-You may want to play with the parameters of image processing and preprocessing. With the not-totally-accurate [architecture diagram](https://github.com/dj66635/mtga-code-grabber/docs/architecture.png) and the convoluted comments in the code you may even understand what's going on. 
-There are some (tests)[https://github.com/dj66635/mtga-code-grabber/tests/tests.py] with sample inputs that I've been using to determine the image preprocessing and most appropriate set of parameters. But hey, I'm no expert at image analysis, most likely you can improve it.
-Feel free to modify this tool. You better share any upgrades with me, thought.
+You may want to play with the parameters of image processing and preprocessing. With the not-totally-accurate [architecture diagram](https://github.com/dj66635/mtga-code-grabber/blob/main/docs/architecture.png) and the convoluted comments in the code you may even understand what's going on. 
+There are some [tests](https://github.com/dj66635/mtga-code-grabber/blob/main/tests/test.py) with sample inputs that I've been using to determine the image preprocessing techniques and the most appropriate set of parameters. But hey, I'm no expert at image analysis, you can most likely improve it.
+Feel free to modify this tool. You better share any updates with me, thought. :smiling_imp:
