@@ -1,0 +1,7 @@
+~umpy==1.16.2
+pytesseract==0.3.10
+requests==2.21.0
+praw==7.7.1
+opencv_python==4.5.1.48
+numpy==1.26.4
+Pillow==10.2.0
