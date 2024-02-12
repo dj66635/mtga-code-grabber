@@ -12,6 +12,8 @@ gray_th_max = 225 # 'black' value after thesholding
 optimal_height = 123 # empirically-found best size for the code boxes
 optimal_width = 650 # about 5.3 width-to-heigth ratio
 
+optimistic = False # based on tests we could skip croping by boundingRect
+
 def preProcess(img, debug=0):
     img = numpy.array(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
@@ -34,9 +36,9 @@ def preProcess(img, debug=0):
         imgS = cv2.drawContours(img.copy(), bigContours, -1, (0,255,0), 3)
         printCv2Img(imgS)
 
-    # Two ways to define bounding rectangles, the second one more 'fitted' and 'straightened'
-    codeBoxes = [cropBoundingRect(thresholdImgRef, contour) for contour in bigContours]
-    codeBoxes += [cropMinAreaRect(thresholdImgRef, contour) for contour in bigContours]
+    # Two ways to define bounding rectangles, the first one more 'fitted' and 'straightened'
+    codeBoxes = [cropMinAreaRect(thresholdImgRef, contour) for contour in bigContours]
+    if not optimistic: codeBoxes += [cropBoundingRect(thresholdImgRef, contour) for contour in bigContours]
    
     codeBoxes = [resize(box, optimal_width, optimal_height) for box in codeBoxes]
     codeBoxes += [erode(box) for box in codeBoxes]

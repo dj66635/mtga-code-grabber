@@ -58,8 +58,17 @@ sampleHard = [('https://new.reddit.com/r/MagicArena/comments/1aiqhnj/people_stil
 samplePath1 = r'tests\20240207_203859.jpg'
 samplePath2 = r'tests\IMG_5056.jpg'
 
+def timeIt(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f'Elapsed time: {round(end - start, 2)}s')
+        return result
+    return wrapper
+
+@timeIt
 def batchRedditTest(samples, n=1, debug=0):
-    start = time.time()
     totalCodes = 0
     totalFound = [0,0,0]
     for sample in samples:
@@ -73,12 +82,9 @@ def batchRedditTest(samples, n=1, debug=0):
     print(f'> Found {totalFound[1]} codes out of {totalCodes} (PostProcess)')
     print(f'> Found {totalFound[2]} codes out of {totalCodes} (Retrial)')
     print(f'> Ratio: {ratio}%')
-    end = time.time()
-    print(f'Total elapsed time: {round(end - start, 2)}s')
     
-    
+@timeIt
 def singleRedditTest(sample, n=1, debug=0):
-    start = time.time()
     sampleUrl, codeAnswers = sample
     print(f'Url: {sampleUrl}')
     submission = redditapi.reddit.submission(url=sampleUrl) 
@@ -99,8 +105,6 @@ def singleRedditTest(sample, n=1, debug=0):
     print(f'> Found {found[0]} out of {len(codeAnswers)} (OCR)')
     print(f'> Found {found[1]} out of {len(codeAnswers)} (PostProcess)')
     print(f'> Found {found[2]} out of {len(codeAnswers)} (Retrial)')
-    end = time.time()
-    print(f'Elapsed time: {round(end - start, 2)}s')
     return found
 
 def processTest(content, contentType, n=1, debug=0):
@@ -119,20 +123,22 @@ def processTest(content, contentType, n=1, debug=0):
     codes = postCodes + flatten([codepostprocessor.retryCodes(code) for code in postCodes])
     return ocrCodes, postCodes, codes
 
+@timeIt
 def claimTest(codes):
-    start = time.time()
     session, csrf_token = mtgaapi.login()
+    retries = []
     for code in codes:
-        print(f'Claiming {code}')
+        print(f'    Claiming {code}')
         response = mtgaapi.claimCode(session, csrf_token, code)
-        print(response)
+        print(f'      {response}')
         if response == 'Not Found':
-            retries = codepostprocessor.retryCodes(code)
-            for retryCode in retries:
-                print(f' Retrying... {retryCode}')
-                mtgaapi.claimCode(session, csrf_token, retryCode)
-    end = time.time()
-    print(f'Elapsed time: {round(end - start, 2)}s')
+            retries += codepostprocessor.retryCodes(code)
+        
+    print(f'    Trying similar codes...')
+    for retryCode in retries:
+        print(f'      Claiming {retryCode}')
+        response = mtgaapi.claimCode(session, csrf_token, retryCode)
+        print(f'        {response}')
     
 def singleFileTest(path, n=1, debug=0):
     print(f'Path {path}')
@@ -145,22 +151,31 @@ def singleFileTest(path, n=1, debug=0):
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
+
 '''
-regular 2sec
-38/40 200s -> 2 threads
-38/40 150s -> 3 threads
-38/40 332s -> almost idle background
-37/40 513s -> high background load affects its accuracy too, maybe because of timeout
+Some quick tests
+    
+Config | Accuracy | Time | Comments
+------------------------------------
 
-0.3 contour 38/40 344s
-200 th 38/40 350s
+Default | 38/40 | 332s | almost idle background
+Default | 37/40 | 513s | high background load (affects its accuracy too, maybe because of timeout)
 
-erode then resize 34/40 345s
+Default 0.3 contour_th | 38/40 | 344s | very similar
+Default 160,200 th     | 38/40 | 350s | very similar
 
-no erode 28/40 244s
-only cropBoundingRect 28/40 238s
-only cropMinAreaRect: 32/40 226s -> optimistic approach
-no resize 32/40 592s
-size 550-103 35/40 460s
-size 750-143 32/40 589s
+Only cropMinAreaRect   | 32/40 | 226s | slightly worse accuracy, faster -> maybe "optimistic mode"
+Only cropBoundingRect  | 28/40 | 238s | worse accuracy, faster
+No erode               | 28/40 | 244s | worse accuracy, faster
+
+Erode then resize | 34/40 | 345s | worse
+Size 550-103      | 35/40 | 460s | worse
+Size 750-143      | 32/40 | 589s | worse
+No resize         | 32/40 | 592s | worse
+
+------------------------------------
+
+Default | 38/40 | 210s | 2 threads
+Default | 38/40 | 160s | 3 threads
+
 '''

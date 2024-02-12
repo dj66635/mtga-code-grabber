@@ -24,12 +24,12 @@ def login():
     response = session.post(MTGA_API_LOGIN_URL, data=json.dumps(mtgaLogin))
     
     response_json = response.json()
-    if "error" in response_json:
+    if 'error' in response_json:
         raise Exception(f'Error: {response_json["error"]["message"]}')
     elif response.status_code == 200:
         pass
     else:
-        raise Exception(f"Failed with status code: {response.status_code}")
+        raise Exception(f'Failed with status code: {response.status_code}')
         
     return session, csrf_token
 
@@ -39,7 +39,7 @@ def claimCode(session, csrf_token, code):
     
     j = response.json()
     if 'error' in j:
-        return j["error"]["message"]
+        return j['error']['message']
     elif 'data' in j:
         return f'CODE REDEEMED'
     else:

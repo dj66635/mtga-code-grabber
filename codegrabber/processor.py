@@ -19,9 +19,9 @@ def process(source, title, content, contentType):
         print('  Preprocessing image...')
         imgs = imagepreprocessor.preProcess(img)
         print('  OCR-processing image...')
-        codes = parallelOCRProcessing(imgs, ocr_workers) # set(flatten([imageocr.parseImage(img) for img in imgs]))
+        codes = set(parallelOCRProcessing(imgs, ocr_workers))
         print('  Looking for codes...')
-        codes = [codepostprocessor.postProcess(code) for code in codes]
+        codes = set([codepostprocessor.postProcess(code) for code in codes])
                     
     elif contentType == TXT:
         print('  Looking for codes...')
@@ -38,18 +38,21 @@ def process(source, title, content, contentType):
         except Exception as e:
             print('    MTGA login failed', e)
             return
-
+        
+        retries = []
         for code in codes:
             print(f'    Claiming {code}')
             response = mtgaapi.claimCode(session, csrf_token, code)
             print(f'      {response}')
             if response == 'Not Found':
-                # Retry strategy
-                retries = codepostprocessor.retryCodes(code)
-                for retryCode in retries:
-                    print(f'      Retrying... {retryCode}')
-                    response = mtgaapi.claimCode(session, csrf_token, retryCode)
-                    print(f'        {response}')
+                retries += codepostprocessor.retryCodes(code)
+        
+        print(f'    Trying similar codes...')
+        for retryCode in retries:
+            print(f'      Claiming {retryCode}')
+            response = mtgaapi.claimCode(session, csrf_token, retryCode)
+            print(f'        {response}')
+            
     else:
         print('  No codes found')
     return codes
