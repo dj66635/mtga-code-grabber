@@ -4,19 +4,19 @@
 
 I was browsing Reddit a little bit...
 
-![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia.PNG)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/robophobia.PNG)
 
-![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia2.PNG)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/robophobia2.PNG)
 
-![](https://github.com/dj66635/mtga-code-grabber/blob/main/robophobia3.PNG)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/robophobia3.PNG)
 
 Robo-phobia is running rampant. F*ck these fools, I say.
 
-![](https://github.com/dj66635/mtga-code-grabber/blob/main/touching.PNG)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/touching.PNG)
 
 Oh, that's so touching. ❤️
 
-![](https://github.com/dj66635/mtga-code-grabber/blob/main/lmao_no.PNG)
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/lmao_no.PNG)
 
 No?
 
@@ -38,7 +38,7 @@ subreddit_names = magicarena,mtg
 
 [Discord]
 auth_token = ***
-channel_ids = 1038882144132550888,425270263416881152,1156189206553559121,517355406365032480
+channel_ids = 1038882144132550888,425270263416881152,517355406365032480
 limit = 5
 delay = 10
 
@@ -77,7 +77,11 @@ python main.py
 
 ### 5. ???
 
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/header.PNG)
+
 ### 6. Profit
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/redeemed.PNG)
 
 ## Hard mode
 You may want to play with the parameters of image processing and preprocessing. With the not-totally-accurate [architecture diagram](https://github.com/dj66635/mtga-code-grabber/blob/main/docs/architecture.png) and the convoluted comments in the code you may even understand what's going on. 

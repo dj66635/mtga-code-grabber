@@ -27,7 +27,7 @@ def listenToDiscord(postsQueue):
         response = requests.get(url, headers=headers)
         j = json.loads(response.content)
         guildName = j['name']
-        readeableName[channelId] = f'# {channelName} @ {guildName}'
+        readeableName[channelId] = f'#{channelName} @ {guildName}'
         
     while True:
         # After delay time, grab limit messages only after the last seen

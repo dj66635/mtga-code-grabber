@@ -1,5 +1,6 @@
 import PIL
 import io
+import multiprocessing
 import imagepreprocessor
 import imageocr
 import coderegex
@@ -7,8 +8,10 @@ import codepostprocessor
 import mtgaapi
 from constants import IMG, TXT
 
+ocr_workers = 2 # number of ocr threads, more than 2/3 doesnt seem to be worth it
+
 def process(source, title, content, contentType):
-    print("-" * 80)
+    print("-" * 100)
     print(f'New {source} Post - Title: {shorten(title)} - Content Type: {contentType}')
     
     if contentType == IMG:
@@ -16,7 +19,7 @@ def process(source, title, content, contentType):
         print('  Preprocessing image...')
         imgs = imagepreprocessor.preProcess(img)
         print('  OCR-processing image...')
-        codes = set(flatten([imageocr.parseImage(img) for img in imgs]))
+        codes = parallelOCRProcessing(imgs, ocr_workers) # set(flatten([imageocr.parseImage(img) for img in imgs]))
         print('  Looking for codes...')
         codes = [codepostprocessor.postProcess(code) for code in codes]
                     
@@ -39,16 +42,32 @@ def process(source, title, content, contentType):
         for code in codes:
             print(f'    Claiming {code}')
             response = mtgaapi.claimCode(session, csrf_token, code)
-            print(f'    {response}')
+            print(f'      {response}')
             if response == 'Not Found':
                 # Retry strategy
                 retries = codepostprocessor.retryCodes(code)
                 for retryCode in retries:
                     print(f'      Retrying... {retryCode}')
-                    mtgaapi.claimCode(session, csrf_token, retryCode)
+                    response = mtgaapi.claimCode(session, csrf_token, retryCode)
+                    print(f'        {response}')
     else:
         print('  No codes found')
-    return
+    return codes
+
+
+def parallelOCRProcessing(imgs, n):
+    q = multiprocessing.Queue()
+    allProcesses = []
+    for i in range(n):  
+        p = multiprocessing.Process(target=imageocr.parseImages, args=(imgs[i*len(imgs)//n:(i+1)*len(imgs)//n], q, ), daemon=True)
+        allProcesses.append(p)
+        p.start()
+    for p in allProcesses:
+        p.join()
+    codes = []
+    while q.qsize():
+        codes += [q.get()]
+    return codes
 
 
 def flatten(xss):
@@ -56,3 +75,4 @@ def flatten(xss):
 
 def shorten(text, maxChars=50):
     return text if len(text) <= maxChars else text[:maxChars] + '...'
+

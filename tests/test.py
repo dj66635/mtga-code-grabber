@@ -7,17 +7,13 @@ os.chdir('..')
 import PIL
 import io
 import time
-import requests
-import json
 from codegrabber import redditapi
-from codegrabber import discordapi
 from codegrabber import processor
 from codegrabber import imagepreprocessor
-from codegrabber import imageocr
 from codegrabber import coderegex
 from codegrabber import codepostprocessor
 from codegrabber import mtgaapi
-from codegrabber import constants
+from codegrabber.constants import IMG, TXT
 
 ''' Tests / Samples '''
 samples = [
@@ -40,6 +36,9 @@ samples = [
          ['92DDF-5890E-4C15C-CDF14-53EA0', '281B2-F10D3-41134-860F2-06C2E']),
         ('https://new.reddit.com/r/MagicArena/comments/1an1faf/codes_will_be_posting_more_over_the_next_few/', 
          ['DFF0A-4B4D8-42AA0-92918-6A94C', 'D976E-82186-B44CE-17AB0-6DEB0']),
+
+        ('https://new.reddit.com/r/MagicArena/comments/1anwoux/c0des/',
+         ['15000-BD429-DCB37-3C411-CA075','DEFDF-D45E6-7E605-59A29-77C1A','1500D-1FFEA-92B12-B79B5-97231']),
         
         ('https://new.reddit.com/r/mtg/comments/1ajpjlf/some_mtg_arena_codes_enjoy/', 
          ['5642F-EBB64-DDFC3-A3DC1-9D647','1F08F-4C0ED-08CA9-6E234-E1EC8','563F7-A51EE-61DB6-443C8-C4FC8','563F8-49D11-4412E-8CA36-A97F5']),
@@ -59,61 +58,69 @@ sampleHard = [('https://new.reddit.com/r/MagicArena/comments/1aiqhnj/people_stil
 samplePath1 = r'tests\20240207_203859.jpg'
 samplePath2 = r'tests\IMG_5056.jpg'
 
-def batchRedditTest(samples, debug=0):
+def batchRedditTest(samples, n=1, debug=0):
     start = time.time()
     totalCodes = 0
-    totalFound = 0
+    totalFound = [0,0,0]
     for sample in samples:
         sampleUrl, codeAnswers = sample
         totalCodes += len(codeAnswers)
-        totalFound += singleRedditTest(sample, debug)
+        found = singleRedditTest(sample, n, debug)
+        totalFound = [totalFound[i] + found[i] for i in range(3)]
         print('-' * 40)
-    ratio = round((totalFound / totalCodes) * 100, 1)
-    print(f'> Found {totalFound} codes out of {totalCodes}: {ratio}%')
+    ratio = round((totalFound[2] / totalCodes) * 100, 1)
+    print(f'> Found {totalFound[0]} codes out of {totalCodes} (OCR)')
+    print(f'> Found {totalFound[1]} codes out of {totalCodes} (PostProcess)')
+    print(f'> Found {totalFound[2]} codes out of {totalCodes} (Retrial)')
+    print(f'> Ratio: {ratio}%')
     end = time.time()
-    print(f'Elapsed time: {end - start}s')
+    print(f'Total elapsed time: {round(end - start, 2)}s')
     
     
-def singleRedditTest(sample, debug=0):
+def singleRedditTest(sample, n=1, debug=0):
+    start = time.time()
     sampleUrl, codeAnswers = sample
     print(f'Url: {sampleUrl}')
     submission = redditapi.reddit.submission(url=sampleUrl) 
     responses = redditapi.readSubmission(submission)
-    totalCodes = []
-    found = 0
+    
+    totalCodes = [[], [], []]
     for response in responses:
-        codes = []
         _, _, content, contentType = response
-        if contentType == "img":
-            img = PIL.Image.open(io.BytesIO(content))
-            codes = singleImageTest(img, debug)
-        elif contentType == "txt":
-            print(content)
-            codes = coderegex.findCode(content)
-            if debug >= 2: print(f'Txt codes: {codes}')
-        else:
-            print("Unsupported type")
-        codes = [codepostprocessor.postProcess(code) for code in codes]
-        codes += flatten([codepostprocessor.retryCodes(code) for code in codes])
-        if debug >= 2: print(f'Postprocessed codes: {codes}')
-        totalCodes += codes
-    found = sum(e in set(codeAnswers) for e in set(totalCodes))
-    print(f'> Found {found} out of {len(codeAnswers)}')
+        ocrCodes, postCodes, codes = processTest(content, contentType, n, debug)
+        if debug >= 2:
+            print(f'ImageOCR codes: {ocrCodes}')
+            print(f'Postprocessed codes: {codes}')
+        totalCodes[0] += ocrCodes
+        totalCodes[1] += postCodes
+        totalCodes[2] += codes
+
+    found = [sum(e in set(codeAnswers) for e in set(totalCodes[i])) for i in range(3)]
+    print(f'> Found {found[0]} out of {len(codeAnswers)} (OCR)')
+    print(f'> Found {found[1]} out of {len(codeAnswers)} (PostProcess)')
+    print(f'> Found {found[2]} out of {len(codeAnswers)} (Retrial)')
+    end = time.time()
+    print(f'Elapsed time: {round(end - start, 2)}s')
     return found
-    
-def singleFileTest(path, debug=0):
-    print(f'Path {path}')
-    img = PIL.Image.open(path)
-    singleImageTest(img, debug)
-    
-def singleImageTest(img, debug):
-    if debug >= 1: display(img.resize(int(0.2*s) for s in img.size))
-    imgs = imagepreprocessor.preProcess(img, debug)
-    codes = set(flatten([imageocr.parseImage(img, debug) for img in imgs]))
-    if debug >= 2: print(f'ImageOCR codes: {codes}')
-    return codes
+
+def processTest(content, contentType, n=1, debug=0):
+    if contentType == IMG:
+        img = PIL.Image.open(io.BytesIO(content))
+        if debug >= 1: display(img.resize(int(0.2*s) for s in img.size))
+        imgs = imagepreprocessor.preProcess(img, debug)
+        if debug >= 1: print(f'Number of imgs after preprocessing: {len(imgs)}')
+        ocrCodes = processor.parallelOCRProcessing(imgs, n)  
+        # ocrCodes = set(flatten([imageocr.parseImage(img) for img in imgs]))          
+    elif contentType == TXT:
+        ocrCodes = coderegex.findCode(content)
+    else:
+        print('  Unsupported content type')  
+    postCodes = [codepostprocessor.postProcess(code) for code in ocrCodes]
+    codes = postCodes + flatten([codepostprocessor.retryCodes(code) for code in postCodes])
+    return ocrCodes, postCodes, codes
 
 def claimTest(codes):
+    start = time.time()
     session, csrf_token = mtgaapi.login()
     for code in codes:
         print(f'Claiming {code}')
@@ -124,26 +131,36 @@ def claimTest(codes):
             for retryCode in retries:
                 print(f' Retrying... {retryCode}')
                 mtgaapi.claimCode(session, csrf_token, retryCode)
-
-def quickClaimReddit(redditUrl):
-    submission = redditapi.reddit.submission(url=redditUrl)
-    title, content, contentType = redditapi.readSubmission(submission)
-    processor.process('', title, content, contentType)
+    end = time.time()
+    print(f'Elapsed time: {round(end - start, 2)}s')
     
-def discordTest(channelID):
-    url = constants.DISCORD_URL + constants.CHANNELS_ENDPOINT + channelID
-    response = requests.get(url, headers=discordapi.headers)
-    j = json.loads(response.content)
-    lMId = j['last_message_id']
-    print(lMId)
-    url = constants.DISCORD_URL + '/guilds/' + j['guild_id']
-    response2 = requests.get(url, headers=discordapi.headers)
-    h = json.loads(response2.content)
-    channelName = j['name']
-    guildName = h['name']
-    text = f'# {channelName} @ {guildName}'
-    print(text)
-    
+def singleFileTest(path, n=1, debug=0):
+    print(f'Path {path}')
+    img = PIL.Image.open(path)
+    imgs = imagepreprocessor.preProcess(img)
+    codes = process.parallelOCRProcessing(imgs, n)  
+    if debug >= 2: print(f'ImageOCR codes: {codes}')  
+    codes = [codepostprocessor.postProcess(code) for code in codes]
     
 def flatten(xss):
     return [x for xs in xss for x in xs]
+
+'''
+regular 2sec
+38/40 200s -> 2 threads
+38/40 150s -> 3 threads
+38/40 332s -> almost idle background
+37/40 513s -> high background load affects its accuracy too, maybe because of timeout
+
+0.3 contour 38/40 344s
+200 th 38/40 350s
+
+erode then resize 34/40 345s
+
+no erode 28/40 244s
+only cropBoundingRect 28/40 238s
+only cropMinAreaRect: 32/40 226s -> optimistic approach
+no resize 32/40 592s
+size 550-103 35/40 460s
+size 750-143 32/40 589s
+'''

@@ -30,6 +30,7 @@ def preProcess(img, debug=0):
     # bigContours = removeQuasiDuplicates(bigContours) # sometimes removes important contours, althougth speeds up the process
     
     if debug >= 1:
+        print(f'Detected {len(bigContours)} contours')
         imgS = cv2.drawContours(img.copy(), bigContours, -1, (0,255,0), 3)
         printCv2Img(imgS)
 
@@ -39,6 +40,7 @@ def preProcess(img, debug=0):
    
     codeBoxes = [resize(box, optimal_width, optimal_height) for box in codeBoxes]
     codeBoxes += [erode(box) for box in codeBoxes]
+    
     imgs = [PIL.Image.fromarray(box) for box in codeBoxes]
     return imgs
 
