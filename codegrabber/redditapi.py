@@ -15,11 +15,13 @@ subreddit_names = config['Reddit']['subreddit_names']
 def listenToReddit(postsQueue):
     print('Listening to Reddit...')
     subreddit = reddit.subreddit('+'.join(subreddit_names.split(',')))
-    for submission in subreddit.stream.submissions(skip_existing=True):
+    # 600 requests in 10 mins is reddit limit, we are at about 40req/min in our subs with this setting
+    for submission in subreddit.stream.submissions(skip_existing=True, pause_after=1):
+        if submission is None: continue
         responses = readSubmission(submission)
         for response in responses:
-            descriptiveName, title, content, contentType = response
-            postsQueue.put((descriptiveName, title, content, contentType))
+            descriptiveName, title, url, content, contentType = response
+            postsQueue.put((descriptiveName, title, url, content, contentType))
 
         
 def readSubmission(submission):
@@ -30,13 +32,13 @@ def readSubmission(submission):
             image_url = i[1]['p'][0]['u']
             image_url = image_url.split('?')[0].replace('preview', 'i')
             response = requests.get(image_url)
-            responses += [(descriptiveName, submission.title, response.content, IMG)]
+            responses += [(descriptiveName, submission.title, reddit.config.reddit_url + submission.permalink, response.content, IMG)]
         return responses
             
     elif submission.url.endswith((PNG, JPG, JPEG)): 
         image_url = submission.url
         response = requests.get(image_url)
-        return [(descriptiveName, submission.title, response.content, IMG)]
+        return [(descriptiveName, submission.title, reddit.config.reddit_url + submission.permalink, response.content, IMG)]
     
     else:
-        return [(descriptiveName, submission.title, submission.selftext, TXT)]
+        return [(descriptiveName, submission.title, reddit.config.reddit_url + submission.permalink, submission.selftext, TXT)]

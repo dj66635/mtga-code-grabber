@@ -42,8 +42,12 @@ channel_ids = 1038882144132550888,425270263416881152,517355406365032480
 limit = 5
 delay = 10
 
+[PreProcessing]
+optimistic = False
+
 [Tesseract]
 tesseract_cmd = C:\msys64\mingw64\bin\tesseract.exe
+workers = 2
 
 [MTGA]
 user_username = ***
@@ -59,7 +63,11 @@ Discord's `auth_token` is your Discord's authorization token. Pretty straightfor
 
 `limit` is the maximum amount of new messages that will be fetched from every channel every time the bot polls Discord. `delay` is the time between each poll. Basically, I didn't want to have it querying the API constantly to make sure I didn't go over the rate limit. You may want to tweak the default values depending on the frequency of messages in your channels.
 
+Setting `optimistic` to True will skip some stages of the preprocessing phase in order to almost halve the execution time at the expense of some accuracy. Probably not needed unless you're facing other world-class bots.
+
 `tesseract_cmd` is the path to your Tesseract binary. If you dont know it, you can most likely find it running `which tesseract` or `where tesseract` on a terminal, depending on your platform.
+
+`workers` is the number of threads that will be spawned to do handle the Tesseract processing. Going beyond 2 or 3 is not worth it, and you might want to lower it to 1 if running this on a toaster.
 
 `user_username` `user_password` are your Wizards of the Coast account credentials. You'll have to trust (or verify) that the code is not sending them to some fishy russian server.
 

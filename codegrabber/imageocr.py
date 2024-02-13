@@ -15,6 +15,7 @@ def parseImage(img):
         img = img.rotate(osd['orientation'], expand=True) # an educated guess...
     except RuntimeError:
         pass
+    #display(img.resize(int(0.2*s) for s in img.size))
     
     # Rotation
     w, h = img.size
@@ -29,6 +30,7 @@ def parseImage(img):
     except RuntimeError as error:
         if str(error) != 'Tesseract process timeout': print(str(error))
 
+    #print(ocr_text)
     matches = coderegex.findCode(ocr_text)
     return matches
 

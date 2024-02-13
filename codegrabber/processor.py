@@ -6,20 +6,26 @@ import imageocr
 import coderegex
 import codepostprocessor
 import mtgaapi
-from constants import IMG, TXT
+from constants import IMG, TXT, LOG_FILE
+import configparser
+import logging
 
-ocr_workers = 2 # number of ocr threads, more than 2/3 doesnt seem to be worth it
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-def process(source, title, content, contentType):
-    print("-" * 100)
-    print(f'New {source} Post - Title: {shorten(title)} - Content Type: {contentType}')
+workers = int(config['Tesseract']['workers']) # number of ocr threads, more than 2/3 doesnt seem to be worth it
+
+def process(source, title, url, content, contentType):
+    print('-' * 100)
+    headline = f'New {source} Post - Title: {shorten(title)} - Content Type: {contentType}'
+    print(headline)
     
     if contentType == IMG:
         img = PIL.Image.open(io.BytesIO(content))
         print('  Preprocessing image...')
         imgs = imagepreprocessor.preProcess(img)
         print('  OCR-processing image...')
-        codes = set(parallelOCRProcessing(imgs, ocr_workers))
+        codes = set(parallelOCRProcessing(imgs, workers))
         print('  Looking for codes...')
         codes = set([codepostprocessor.postProcess(code) for code in codes])
                     
@@ -32,26 +38,29 @@ def process(source, title, content, contentType):
         
     if len(codes) > 0:
         print('  Codes apparently found!')
+        logging.debug(headline)
+        logging.debug(f'  URL: {url}')
+        
         try:
             session, csrf_token = mtgaapi.login()
-            print('    Successfully logged into MTGA')
+            logging.info('    Successfully logged into MTGA')
         except Exception as e:
-            print('    MTGA login failed', e)
+            logging.info('    MTGA login failed', e)
             return
         
         retries = []
         for code in codes:
-            print(f'    Claiming {code}')
+            logging.info(f'    Claiming {code}')
             response = mtgaapi.claimCode(session, csrf_token, code)
-            print(f'      {response}')
+            logging.info(f'      {response}')
             if response == 'Not Found':
                 retries += codepostprocessor.retryCodes(code)
         
-        print(f'    Trying similar codes...')
+        logging.info(f'    Trying similar codes...')
         for retryCode in retries:
-            print(f'      Claiming {retryCode}')
+            logging.info(f'      Claiming {retryCode}')
             response = mtgaapi.claimCode(session, csrf_token, retryCode)
-            print(f'        {response}')
+            logging.info(f'        {response}')
             
     else:
         print('  No codes found')
@@ -72,6 +81,17 @@ def parallelOCRProcessing(imgs, n):
         codes += [q.get()]
     return codes
 
+def initLogs():
+    # DEBUG to file, INFO to file and console
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%d/%m %H:%M', filename=LOG_FILE, filemode='a')
+    # Second stream to still print in console
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter('%(message)s'))
+    logging.getLogger().addHandler(console)
+    
+    # PIL logs pollute mines
+    logging.getLogger('PIL').setLevel(logging.WARNING)
 
 def flatten(xss):
     return [x for xs in xss for x in xs]

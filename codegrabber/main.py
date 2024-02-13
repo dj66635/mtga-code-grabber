@@ -2,10 +2,13 @@ import multiprocessing
 import redditapi
 import discordapi
 import processor
+from constants import ART_FILE
 
 def main():
-    with open('art.txt') as f: header = f.read()
+    with open(ART_FILE) as f: header = f.read()
     print(header)
+    
+    processor.initLogs()
     
     postsQueue = multiprocessing.Queue()
     r = multiprocessing.Process(target=redditapi.listenToReddit, args=(postsQueue, ), daemon=True)
@@ -15,8 +18,8 @@ def main():
     
     try:
         while True:
-            source, title, content, contentType = postsQueue.get()
-            processor.process(source, title, content, contentType)
+            source, title, url, content, contentType = postsQueue.get()
+            processor.process(source, title, url, content, contentType)
             
     except KeyboardInterrupt:
         print('Ending...')

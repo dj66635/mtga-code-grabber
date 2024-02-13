@@ -10,6 +10,7 @@ import time
 from codegrabber import redditapi
 from codegrabber import processor
 from codegrabber import imagepreprocessor
+from codegrabber import imageocr
 from codegrabber import coderegex
 from codegrabber import codepostprocessor
 from codegrabber import mtgaapi
@@ -38,8 +39,10 @@ samples = [
          ['DFF0A-4B4D8-42AA0-92918-6A94C', 'D976E-82186-B44CE-17AB0-6DEB0']),
 
         ('https://new.reddit.com/r/MagicArena/comments/1anwoux/c0des/',
-         ['15000-BD429-DCB37-3C411-CA075','DEFDF-D45E6-7E605-59A29-77C1A','1500D-1FFEA-92B12-B79B5-97231']),
-        
+         ['15000-BD429-DCB37-3C411-CA075', 'DEFDF-D45E6-7E605-59A29-77C1A', '1500D-1FFEA-92B12-B79B5-97231']),
+        ('https://new.reddit.com/r/MagicArena/comments/1aptx8q/prerelease_codes/',
+         ['4E662-86331-95B6E-055E0-33375', '4E8A2-9317D-3E83E-ED4C5-C99BC', '4EC24-EAE99-73366-9BF7A-B6B2A']),
+         
         ('https://new.reddit.com/r/mtg/comments/1ajpjlf/some_mtg_arena_codes_enjoy/', 
          ['5642F-EBB64-DDFC3-A3DC1-9D647','1F08F-4C0ED-08CA9-6E234-E1EC8','563F7-A51EE-61DB6-443C8-C4FC8','563F8-49D11-4412E-8CA36-A97F5']),
         ('https://new.reddit.com/r/mtg/comments/1ajs5cz/mtg_arena_codes/',
@@ -68,13 +71,13 @@ def timeIt(func):
     return wrapper
 
 @timeIt
-def batchRedditTest(samples, n=1, debug=0):
+def batchRedditTest(samples, optimisticMode=False, n=1, debug=0):
     totalCodes = 0
     totalFound = [0,0,0]
     for sample in samples:
         sampleUrl, codeAnswers = sample
         totalCodes += len(codeAnswers)
-        found = singleRedditTest(sample, n, debug)
+        found = singleRedditTest(sample, optimisticMode, n, debug)
         totalFound = [totalFound[i] + found[i] for i in range(3)]
         print('-' * 40)
     ratio = round((totalFound[2] / totalCodes) * 100, 1)
@@ -84,7 +87,7 @@ def batchRedditTest(samples, n=1, debug=0):
     print(f'> Ratio: {ratio}%')
     
 @timeIt
-def singleRedditTest(sample, n=1, debug=0):
+def singleRedditTest(sample, optimisticMode=False, n=1, debug=0):
     sampleUrl, codeAnswers = sample
     print(f'Url: {sampleUrl}')
     submission = redditapi.reddit.submission(url=sampleUrl) 
@@ -92,8 +95,8 @@ def singleRedditTest(sample, n=1, debug=0):
     
     totalCodes = [[], [], []]
     for response in responses:
-        _, _, content, contentType = response
-        ocrCodes, postCodes, codes = processTest(content, contentType, n, debug)
+        _, _, _, content, contentType = response
+        ocrCodes, postCodes, codes = processTest(content, contentType, optimisticMode, n, debug)
         if debug >= 2:
             print(f'ImageOCR codes: {ocrCodes}')
             print(f'Postprocessed codes: {codes}')
@@ -107,14 +110,14 @@ def singleRedditTest(sample, n=1, debug=0):
     print(f'> Found {found[2]} out of {len(codeAnswers)} (Retrial)')
     return found
 
-def processTest(content, contentType, n=1, debug=0):
+def processTest(content, contentType, optimisticMode=False, n=1, debug=0):
     if contentType == IMG:
         img = PIL.Image.open(io.BytesIO(content))
         if debug >= 1: display(img.resize(int(0.2*s) for s in img.size))
-        imgs = imagepreprocessor.preProcess(img, debug)
+        imgs = imagepreprocessor.preProcess(img, optimisticMode, debug)
         if debug >= 1: print(f'Number of imgs after preprocessing: {len(imgs)}')
         ocrCodes = processor.parallelOCRProcessing(imgs, n)  
-        # ocrCodes = set(flatten([imageocr.parseImage(img) for img in imgs]))          
+        #ocrCodes = set(flatten([imageocr.parseImage(img) for img in imgs]))          
     elif contentType == TXT:
         ocrCodes = coderegex.findCode(content)
     else:
@@ -140,18 +143,17 @@ def claimTest(codes):
         response = mtgaapi.claimCode(session, csrf_token, retryCode)
         print(f'        {response}')
     
-def singleFileTest(path, n=1, debug=0):
+def singleFileTest(path, optimisticMode=False, n=1, debug=0):
     print(f'Path {path}')
     img = PIL.Image.open(path)
-    imgs = imagepreprocessor.preProcess(img)
-    codes = process.parallelOCRProcessing(imgs, n)  
+    imgs = imagepreprocessor.preProcess(img, optimisticMode, debug)
+    codes = processor.parallelOCRProcessing(imgs, n)  
     if debug >= 2: print(f'ImageOCR codes: {codes}')  
     codes = [codepostprocessor.postProcess(code) for code in codes]
     
 def flatten(xss):
     return [x for xs in xss for x in xs]
-
-
+    
 '''
 Some quick tests
     

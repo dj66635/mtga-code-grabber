@@ -5,6 +5,8 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+optimistic = config['PreProcessing']['optimistic'] == 'True' # based on tests we could skip croping by boundingRect
+
 contour_th = 0.4  # what to consider a contour compared to the biggest one
 gray_ths = 160, 190 # thresholds to perform multiple binary thresholdings to a graysacale image
 gray_th_max = 225 # 'black' value after thesholding
@@ -12,9 +14,7 @@ gray_th_max = 225 # 'black' value after thesholding
 optimal_height = 123 # empirically-found best size for the code boxes
 optimal_width = 650 # about 5.3 width-to-heigth ratio
 
-optimistic = False # based on tests we could skip croping by boundingRect
-
-def preProcess(img, debug=0):
+def preProcess(img, optimisticMode=optimistic, debug=0):
     img = numpy.array(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
 
@@ -38,7 +38,7 @@ def preProcess(img, debug=0):
 
     # Two ways to define bounding rectangles, the first one more 'fitted' and 'straightened'
     codeBoxes = [cropMinAreaRect(thresholdImgRef, contour) for contour in bigContours]
-    if not optimistic: codeBoxes += [cropBoundingRect(thresholdImgRef, contour) for contour in bigContours]
+    if not optimisticMode: codeBoxes += [cropBoundingRect(thresholdImgRef, contour) for contour in bigContours]
    
     codeBoxes = [resize(box, optimal_width, optimal_height) for box in codeBoxes]
     codeBoxes += [erode(box) for box in codeBoxes]
