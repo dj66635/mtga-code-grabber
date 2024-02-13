@@ -2,6 +2,7 @@ import praw
 import requests
 from constants import REDDIT, IMG, TXT, PNG, JPG, JPEG
 import configparser
+import logging
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -12,11 +13,13 @@ reddit = praw.Reddit(client_id = config['Reddit']['client_id'],
 
 subreddit_names = config['Reddit']['subreddit_names']
 
+
 def listenToReddit(postsQueue):
     print('Listening to Reddit...')
     subreddit = reddit.subreddit('+'.join(subreddit_names.split(',')))
-    # 600 requests in 10 mins is reddit limit, we are at about 40req/min in our subs with this setting
-    for submission in subreddit.stream.submissions(skip_existing=True, pause_after=1):
+    # 600 requests in 10 mins is reddit limit, we are at about 50req/min in our subs with this setting
+    for submission in subreddit.stream.submissions(skip_existing=True, pause_after=0):
+        if reddit.auth.limits['remaining'] < 30: logging.info('Reaching Reddit rate limit!')
         if submission is None: continue
         responses = readSubmission(submission)
         for response in responses:
