@@ -24,7 +24,7 @@ No?
 
 ### 1. Install Tesseract
 
-This project leverages Google's open source OCR Tesseract for text recognition. Follow [its repository](https://github.com/tesseract-ocr/tesseract) instructions to install it. Depeding on your OS it may be a pain in the ass. For your reference, this project have been developed using Tesseract 5.3.3 in Windows 10.
+This project leverages Google's open source OCR Tesseract for text recognition. Follow [its repository](https://github.com/tesseract-ocr/tesseract) instructions to install it. Depeding on your OS it may be a pain in the ass. For your reference, this project have been developed using Tesseract 5.3.3 and Python 3.7.1 in Windows 10.
 
 ### 2. Fill in the configuration file
 
