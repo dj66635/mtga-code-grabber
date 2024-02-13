@@ -67,7 +67,7 @@ Setting `optimistic` to True will skip some stages of the preprocessing phase in
 
 `tesseract_cmd` is the path to your Tesseract binary. If you dont know it, you can most likely find it running `which tesseract` or `where tesseract` on a terminal, depending on your platform.
 
-`workers` is the number of threads that will be spawned to do handle the Tesseract processing. Going beyond 2 or 3 is not worth it, and you might want to lower it to 1 if running this on a toaster.
+`workers` is the number of threads that will be spawned to handle the Tesseract processing. Going beyond 2 or 3 is not worth it, and you might want to lower it to 1 if running this on a toaster.
 
 `user_username` `user_password` are your Wizards of the Coast account credentials. You'll have to trust (or verify) that the code is not sending them to some fishy russian server.
 
