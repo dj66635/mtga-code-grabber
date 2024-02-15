@@ -90,8 +90,9 @@ def initLogs():
     console.setFormatter(logging.Formatter('%(message)s'))
     logging.getLogger().addHandler(console)
     
-    # PIL logs pollute mines
+    # other module logs pollute mines
     logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('requests').setLevel(logging.WARNING)
 
 def flatten(xss):
     return [x for xs in xss for x in xs]

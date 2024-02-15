@@ -2,7 +2,7 @@
 
 ## Intro
 
-I was browsing Reddit a little bit...
+As a new Magic player looking to fight my way through the aggresive economy of MTGA, I was browsing Reddit a little bit...
 
 ![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/robophobia.PNG)
 

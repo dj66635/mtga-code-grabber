@@ -1,9 +1,8 @@
 import sys
-sys.path.append(r'..\codegrabber')
-sys.path.append(r'..\mtga-code-grabber\codegrabber')
 import os
 os.chdir('..')
-
+sys.path.append(r'./codegrabber')
+ 
 import PIL
 import io
 import time
@@ -35,6 +34,8 @@ samples = [
          ['1930B-A8592-97D93-EC138-9EF98', '16C22-D24A5-10D7F-54243-9638E']),
         ('https://new.reddit.com/r/MagicArena/comments/1akgt7p/up_for_grabs/',
          ['92DDF-5890E-4C15C-CDF14-53EA0', '281B2-F10D3-41134-860F2-06C2E']),
+        ('https://new.reddit.com/r/MagicArena/comments/1aqrylt/heres_some_codes/',
+         ['C24D3-46123-39088-10E9F-2FC66','D40C8-C554B-99AD1-7BB18-21AA9']),
         ('https://new.reddit.com/r/MagicArena/comments/1an1faf/codes_will_be_posting_more_over_the_next_few/', 
          ['DFF0A-4B4D8-42AA0-92918-6A94C', 'D976E-82186-B44CE-17AB0-6DEB0']),
 
@@ -53,7 +54,10 @@ samples = [
         ('https://new.reddit.com/r/MagicArena/comments/1ajsqk0/feedind_the_bots/', 
          ['A9FD8-675E0-2528F-1FBC3-229B0','FE69E-54E2C-91646-A8B37-6A167','A91ED-652AF-AD804-23EF7-1B2E9','D9305-EA464-FD6FA-9716E-DBC46','4CF66-7923B-D0F7D-4A6FE-FD855','2A3CC-DBB83-D3F85-F5968-7123F']),
         ('https://new.reddit.com/r/MagicArena/comments/1amjlmn/new_codes/', 
-         ['66922-03777-F05F5-484FD-1FE12','7DEAE-057E8-B7869-DE087-D341A','533FF-2B352-6FFC8-3C2E1-297E9','77474-C8E27-ED24A-24420-5979B','7DE9A-6612C-74428-72DEF-4D85A','7DE85-09764-673EF-8905B-7F075'])   
+         ['66922-03777-F05F5-484FD-1FE12','7DEAE-057E8-B7869-DE087-D341A','533FF-2B352-6FFC8-3C2E1-297E9','77474-C8E27-ED24A-24420-5979B','7DE9A-6612C-74428-72DEF-4D85A','7DE85-09764-673EF-8905B-7F075']),
+        
+        ('https://new.reddit.com/r/MagicArena/comments/1arnyyx/free_arena_code_cards/',
+         ['853AE-0ACE1-6314D-0A024-65C5F','8537B-926E3-AC4A4-5B03D-5D684','86C64-2D39B-00359-A35D5-6A6D9','85DC9-4DFC3-E48C9-7FF2A-A9C26','BF58D-932CE-69855-FB2BE-A425C','C02A3-A1A34-A51F5-0EFAA-D5953','BF558-9C62C-069FA-AB088-84C6E','8536B-D60DF-D816B-A1914-7BE90','85357-44AF6-D7E16-C5C0C-DD466','C01DE-AD5C9-C877F-6558E-624E2','8534F-7BAD8-0310B-66073-5957B','853BC-57F13-23C19-9D2C9-33368','BF559-36BCC-97824-FAC80-6D26A'])
         ]
               
 sampleTxt = [('https://new.reddit.com/r/MagicArena/comments/1akxex1/streets_of_new_capenna_prerelease_arena_codes/',['C2296-9F534-0C8CD-ABFD6-70EC7', 'B86FE-715E9-F3A1D-869DD-388D4', 'C22DF-5A380-E3355-F1DAC-BB64F', 'C4BE5-95C57-95356-79629-0227F', 'C3FB1-3AC79-8C81F-49393-DE536'])]
@@ -163,7 +167,7 @@ Config | Accuracy | Time | Comments
 Default | 38/40 | 332s | almost idle background
 Default | 37/40 | 513s | high background load (affects its accuracy too, maybe because of timeout)
 
-Default 0.3 contour_th | 38/40 | 344s | very similar
+Default 0.3 contour_th | 38/40 | 344s | very similar -> actually better for some light background codes
 Default 160,200 th     | 38/40 | 350s | very similar
 
 Only cropMinAreaRect   | 32/40 | 226s | slightly worse accuracy, faster -> maybe "optimistic mode"

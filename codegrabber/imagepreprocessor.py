@@ -7,7 +7,7 @@ config.read('config.ini')
 
 optimistic = config['PreProcessing']['optimistic'] == 'True' # based on tests we could skip croping by boundingRect
 
-contour_th = 0.4  # what to consider a contour compared to the biggest one
+contour_th = 0.3  # what to consider a contour compared to the biggest one
 gray_ths = 160, 190 # thresholds to perform multiple binary thresholdings to a graysacale image
 gray_th_max = 225 # 'black' value after thesholding
 

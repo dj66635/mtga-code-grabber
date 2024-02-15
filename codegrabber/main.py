@@ -4,6 +4,15 @@ import discordapi
 import processor
 from constants import ART_FILE
 
+'''
+
+TODO
+
+- fix requirements.txt
+- investigate WARNING:prawcore:Retrying due to ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='oauth.reddit.com', port=443): Read timed out. (read timeout=16.0)")) status: GET https://oauth.reddit.com/r/magicarena+mtg/new
+
+'''
+
 def main():
     with open(ART_FILE) as f: header = f.read()
     print(header)
