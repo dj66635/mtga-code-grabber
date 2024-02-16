@@ -28,13 +28,14 @@ This project leverages Google's open source OCR Tesseract for text recognition. 
 
 ### 2. Fill in the configuration file
 
-MTGA Code Grabber :tm: connects to Reddit and Discord to get its inputs, and to Wizards website to claim the codes. Which means you need to create a `config.ini` file in the root folder of the project and set your credentials in it. Luckyly, I provide a sample for you [`example.config.ini`](https://github.com/dj66635/mtga-code-grabber/blob/main/example.config.ini). Let's go over it quickly.
+MTGA Code Grabber :tm: connects to Reddit and Discord to get its inputs, and to Wizards website to claim the codes. Which means you need to create a `config.ini` file in the root folder of the project and set your credentials in it. Luckyly, I provide a sample for you ([`example.config.ini`](https://github.com/dj66635/mtga-code-grabber/blob/main/example.config.ini)). Let's go over it quickly.
 
 ```
 [Reddit]
 client_id = *** 
 client_secret = ***
 subreddit_names = magicarena,mtg
+delay = 1
 
 [Discord]
 auth_token = ***
@@ -94,4 +95,32 @@ python main.py
 ## Hard mode
 You may want to play with the parameters of image processing and preprocessing. With the not-totally-accurate [architecture diagram](https://github.com/dj66635/mtga-code-grabber/blob/main/docs/architecture.png) and the convoluted comments in the code you may even understand what's going on. 
 There are some [tests](https://github.com/dj66635/mtga-code-grabber/blob/main/tests/test.py) with sample inputs that I've been using to determine the image preprocessing techniques and the most appropriate set of parameters. But hey, I'm no expert at image analysis, you can most likely improve it.
-Feel free to modify this tool. You better share any updates with me, thought. :smiling_imp:
+Feel free to modify this tool. You better share any updates with me, though. :smiling_imp:
+
+## Outro
+
+I couldn't resist the urge to finish this Readme without laughing at some bot-negationists.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed2.PNG)
+
+Indeed, you're never outspeeding my bot with that approach.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed6.PNG)
+
+We are in 2024, my friend.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed1.PNG)
+
+They're not.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed3.PNG)
+
+Absolutely not.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed4.PNG)
+
+Keep cringing, you fake-news-spreader.
+
+![](https://github.com/dj66635/mtga-code-grabber/blob/main/readme-pics/shamed5.PNG)
+
+Over and out.

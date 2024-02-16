@@ -91,7 +91,9 @@ def initLogs():
     logging.getLogger().addHandler(console)
     
     # other module logs pollute mines
+    logging.getLogger('PIL').setLevel(logging.WARNING)
     for log_name, log_obj in logging.Logger.manager.loggerDict.items():
+        print(log_name, log_obj)
         log_obj.disabled = True
 
 def flatten(xss):

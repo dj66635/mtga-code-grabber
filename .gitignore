@@ -1,4 +1,8 @@
-config.ini
 **/__pycache__/
-logs.txt
-launch.bat
+*.ini
+*.pem
+*.bat
+*.txt
+!example.config.ini
+!art.txt
+!requirements.txt
