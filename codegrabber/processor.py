@@ -21,13 +21,16 @@ def process(source, title, url, content, contentType):
     print(headline)
     
     if contentType == IMG:
-        img = PIL.Image.open(io.BytesIO(content))
-        print('  Preprocessing image...')
-        imgs = imagepreprocessor.preProcess(img)
-        print('  OCR-processing image...')
-        codes = set(parallelOCRProcessing(imgs, workers))
-        print('  Looking for codes...')
-        codes = set([codepostprocessor.postProcess(code) for code in codes])
+        try:
+            img = PIL.Image.open(io.BytesIO(content))
+            print('  Preprocessing image...')
+            imgs = imagepreprocessor.preProcess(img)
+            print('  OCR-processing image...')
+            codes = set(parallelOCRProcessing(imgs, workers))
+            print('  Looking for codes...')
+            codes = set([codepostprocessor.postProcess(code) for code in codes])
+        except Exception as e:
+            logging.debug(str(e))
                     
     elif contentType == TXT:
         print('  Looking for codes...')

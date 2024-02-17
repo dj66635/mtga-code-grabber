@@ -128,12 +128,15 @@ def singleRedditTest(sample, optimisticMode=False, n=1, debug=0):
 
 def processTest(content, contentType, optimisticMode=False, n=1, debug=0):
     if contentType == IMG:
-        img = PIL.Image.open(io.BytesIO(content))
-        if debug >= 1: display(img.resize(int(0.2*s) for s in img.size))
-        imgs = imagepreprocessor.preProcess(img, optimisticMode, debug)
-        if debug >= 1: print(f'Number of imgs after preprocessing: {len(imgs)}')
-        ocrCodes = processor.parallelOCRProcessing(imgs, n)  
-        #ocrCodes = set(flatten([imageocr.parseImage(img) for img in imgs]))          
+        try:
+            img = PIL.Image.open(io.BytesIO(content))
+            if debug >= 1: display(img.resize(int(0.2*s) for s in img.size))
+            imgs = imagepreprocessor.preProcess(img, optimisticMode, debug)
+            if debug >= 1: print(f'Number of imgs after preprocessing: {len(imgs)}')
+            ocrCodes = processor.parallelOCRProcessing(imgs, n)  
+            #ocrCodes = set(flatten([imageocr.parseImage(img) for img in imgs]))
+        except Exception as e:
+            print(str(e))
     elif contentType == TXT:
         ocrCodes = coderegex.findCode(content)
     else:
