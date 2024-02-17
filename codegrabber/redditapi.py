@@ -19,11 +19,15 @@ subreddit_names = config['Reddit']['subreddit_names']
 def listenToReddit(postsQueue):
     print('Listening to Reddit...')
     subreddit = reddit.subreddit('+'.join(subreddit_names.split(',')))
-    # 600 requests in 10 mins is reddit limit, we are at about 50req/min in our subs with this setting
+    # 600 requests in 10 mins is reddit limit
     for submission in subreddit.stream.submissions(skip_existing=True, pause_after=pause_after_):
-        if reddit.auth.limits['remaining'] < 30: logging.info('Reaching Reddit rate limit!')
+        if reddit.auth.limits['remaining'] < 20: logging.debug(f'Reaching Reddit rate limit: {reddit.auth.limits["remaining"]}')
         if submission is None: continue
-        responses = readSubmission(submission)
+        try:
+            responses = readSubmission(submission)
+        except Exception as e:
+            logging.debug(str(e))
+            
         for response in responses:
             descriptiveName, title, url, content, contentType = response
             postsQueue.put((descriptiveName, title, url, content, contentType))
@@ -33,11 +37,14 @@ def readSubmission(submission):
     descriptiveName = REDDIT + ' (r/' + submission.subreddit.display_name + ')'
     if hasattr(submission, 'is_gallery'):
         responses = []
+        total = len(submission.media_metadata.items())
+        n = 1
         for i in submission.media_metadata.items():
             image_url = i[1]['p'][0]['u']
             image_url = image_url.split('?')[0].replace('preview', 'i')
             response = requests.get(image_url)
-            responses += [(descriptiveName, submission.title, reddit.config.reddit_url + submission.permalink, response.content, IMG)]
+            responses += [(descriptiveName, f'({n}/{total}) ' + submission.title, reddit.config.reddit_url + submission.permalink, response.content, IMG)]
+            n += 1
         return responses
             
     elif submission.url.endswith((PNG, JPG, JPEG)): 

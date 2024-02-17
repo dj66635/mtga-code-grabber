@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import logging
 from constants import DISCORD, IMG, TXT, DISCORD_URL, API_ENDPOINT, CHANNELS_ENDPOINT, GUILDS_ENDPOINT, MESSAGES_ENDPOINT, LIMIT_QUERY, AFTER_QUERY
 import configparser
 
@@ -35,7 +36,10 @@ def listenToDiscord(postsQueue):
         # After delay time, grab limit messages only after the last seen
         time.sleep(delay)
         for channelId in channels:
-            lastMsgIdChannel = pollChannel(channelId, guildId[channelId], readeableName[channelId], lastMsgId[channelId], postsQueue)
+            try:
+                lastMsgIdChannel = pollChannel(channelId, guildId[channelId], readeableName[channelId], lastMsgId[channelId], postsQueue)
+            except Exception as e:
+                logging.debug(str(e))
             lastMsgId[channelId] = lastMsgIdChannel
                         
                         

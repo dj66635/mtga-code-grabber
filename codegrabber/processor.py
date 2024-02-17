@@ -39,7 +39,7 @@ def process(source, title, url, content, contentType):
     if len(codes) > 0:
         print('  Codes apparently found!')
         logging.debug(headline)
-        logging.debug(f'  URL: {url}')
+        logging.debug(f'URL: {url}')
         
         try:
             session, csrf_token = mtgaapi.login()
@@ -56,7 +56,7 @@ def process(source, title, url, content, contentType):
             if response == 'Not Found':
                 retries += codepostprocessor.retryCodes(code)
         
-        logging.info(f'    Trying similar codes...')
+        if len(retries) > 0: logging.info(f'    Trying similar codes...')
         for retryCode in retries:
             logging.info(f'      Claiming {retryCode}')
             response = mtgaapi.claimCode(session, csrf_token, retryCode)
@@ -95,9 +95,6 @@ def initLogs():
     for log_name, log_obj in logging.Logger.manager.loggerDict.items():
         log_obj.disabled = True
 
-def flatten(xss):
-    return [x for xs in xss for x in xs]
-
-def shorten(text, maxChars=50):
+def shorten(text, maxChars=40):
     return text if len(text) <= maxChars else text[:maxChars] + '...'
 

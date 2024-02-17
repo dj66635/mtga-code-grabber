@@ -17,6 +17,8 @@ from codegrabber.constants import IMG, TXT
 
 ''' Tests / Samples '''
 samples = [
+        ('https://new.reddit.com/r/MagicArena/comments/1asy10i/hello_there_nighthawks/',
+         ['1714B-3D22E-D7F50-A13BC-EF7AC']),
         ('https://new.reddit.com/r/MagicArena/comments/1ai1blb/free_code/', 
          ['EFD8D-7DBE2-BEB02-36638-F8D00']),
         ('https://new.reddit.com/r/MagicArena/comments/1aifurw/pre_release_codes_for_you_mf/', 
@@ -28,6 +30,8 @@ samples = [
         ('https://new.reddit.com/r/MagicArena/comments/1agx4zk/free_code/', 
          ['2B946-CD9FB-C0AD3-CF4C8-AAB70']),
          
+        ('https://new.reddit.com/r/MagicArena/comments/1asx7uv/extra_arena_promo_codes/',
+         ['E2BA4-347AE-AB95F-65A0E-292A0', 'E3014-5E22B-35C48-04E2F-3CB9A']),
         ('https://new.reddit.com/r/mtg/comments/1aiaw43/arena_codes/', 
          ['08A49-510F7-58392-A28A1-AE539', '089C8-A5EB8-DD9F4-C3BFA-FA46A']),
         ('https://new.reddit.com/r/mtg/comments/1aiejrx/free_codes/', 
@@ -36,8 +40,6 @@ samples = [
          ['92DDF-5890E-4C15C-CDF14-53EA0', '281B2-F10D3-41134-860F2-06C2E']),
         ('https://new.reddit.com/r/MagicArena/comments/1aqrylt/heres_some_codes/',
          ['C24D3-46123-39088-10E9F-2FC66','D40C8-C554B-99AD1-7BB18-21AA9']),
-        ('https://new.reddit.com/r/MagicArena/comments/1an1faf/codes_will_be_posting_more_over_the_next_few/', 
-         ['DFF0A-4B4D8-42AA0-92918-6A94C', 'D976E-82186-B44CE-17AB0-6DEB0']),
 
         ('https://new.reddit.com/r/MagicArena/comments/1anwoux/c0des/',
          ['15000-BD429-DCB37-3C411-CA075', 'DEFDF-D45E6-7E605-59A29-77C1A', '1500D-1FFEA-92B12-B79B5-97231']),
@@ -57,15 +59,16 @@ samples = [
          ['66922-03777-F05F5-484FD-1FE12','7DEAE-057E8-B7869-DE087-D341A','533FF-2B352-6FFC8-3C2E1-297E9','77474-C8E27-ED24A-24420-5979B','7DE9A-6612C-74428-72DEF-4D85A','7DE85-09764-673EF-8905B-7F075']),
         
         ('https://new.reddit.com/r/MagicArena/comments/1arnyyx/free_arena_code_cards/',
-         ['853AE-0ACE1-6314D-0A024-65C5F','8537B-926E3-AC4A4-5B03D-5D684','86C64-2D39B-00359-A35D5-6A6D9','85DC9-4DFC3-E48C9-7FF2A-A9C26','BF58D-932CE-69855-FB2BE-A425C','C02A3-A1A34-A51F5-0EFAA-D5953','BF558-9C62C-069FA-AB088-84C6E','8536B-D60DF-D816B-A1914-7BE90','85357-44AF6-D7E16-C5C0C-DD466','C01DE-AD5C9-C877F-6558E-624E2','8534F-7BAD8-0310B-66073-5957B','853BC-57F13-23C19-9D2C9-33368','BF559-36BCC-97824-FAC80-6D26A'])
+         ['853AE-0ACE1-6314D-0A024-65C5F','8537B-926E3-AC4A4-5B03D-5D684','86C64-2D39B-00359-A35D5-6A6D9','85DC9-4DFC3-E48C9-7FF2A-A9C26','BF58D-932CE-69855-FB2BE-A425C','C02A3-A1A34-A51F5-0EFAA-D5953',
+          'BF558-9C62C-069FA-AB088-84C6E','8536B-D60DF-D816B-A1914-7BE90','85357-44AF6-D7E16-C5C0C-DD466','C01DE-AD5C9-C877F-6558E-624E2','8534F-7BAD8-0310B-66073-5957B','853BC-57F13-23C19-9D2C9-33368','BF559-36BCC-97824-FAC80-6D26A']),
+         
+        ('https://new.reddit.com/r/mtg/comments/1aruh7q/knock_yourselves_out/', 
+         ['FDE9D-9AE1D-5A4E5-D9533-263E2','4BDCD-38B11-0A79E-1899C-5AE2F','4BDD0-E9A86-DF994-0AB9E-A9B2C','C801B-2C3DF-6594E-5D52B-CF1E7','D0FD1-CB6F1-3D6ED-86EA5-B5908','28EE6-22DA4-25ED2-39EC1-6BA21',
+          '7C599-87018-E84F5-92B11-578A8','11E70-6C570-CEF6B-3F27F-2030D','212E9-BEE07-B1398-CFD14-4B25A','212E5-F0140-82DC6-8B782-AF37D','3E623-E0F55-C2E45-15F29-DB01F','42ADC-E7EE3-B1637-4ED0D-12F5F',
+          '85DCE-410FF-BDF4A-F6EFA-10934','85DE7-47BDB-143CA-A3A92-2BF21','3DF1B-555A0-9F328-50959-080D3','96351-66C92-53AD6-B62AB-F6DFE','A79A5-4AE5B-6577C-E8E9F-0FA54','380F3-DF516-ECBF2-13557-5261C',
+          'D4AFF-C3E8B-B8F2D-BFD1E-B172C','AA67C-61793-2B088-2DC89-3F8AE','BD567-9E925-854CF-4C85E-6A114','85B78-481EC-ED96F-5EA7B-377FA','D4C58-EC30E-7AE0A-40318-C1077','04421-2964D-62C42-88826-FEC16',
+          '0636C-AE645-D472A-3E1F5-45E7F','26114-9171B-880AC-AF96C-AB6C3','184F3-7ED77-583FD-16AF5-15DDD','54D57-53D7A-F320E-C6159-A77F8','54D59-E25BC-D12CF-81F5B-2F9A8']) 
         ]
-            
-sample29 = ('https://new.reddit.com/r/mtg/comments/1aruh7q/knock_yourselves_out/', 
-            ['FDE9D-9AE1D-5A4E5-D9533-263E2', '4BDCD-38B11-0A79E-1899C-5AE2F', '4BDD0-E9A86-DF994-0AB9E-A9B2C', 'C801B-2C3DF-6594E-5D52B-CF1E7', 'D0FD1-CB6F1-3D6ED-86EA5-B5908', '28EE6-22DA4-25ED2-39EC1-6BA21',
-             '7C599-87018-E84F5-92B11-578A8', '11E70-6C570-CEF6B-3F27F-2030D', '212E9-BEE07-B1398-CFD14-4B25A', '212E5-F0140-82DC6-8B782-AF37D', '3E623-E0F55-C2E45-15F29-DB01F', '42ADC-E7EE3-B1637-4ED0D-12F5F',
-             '85DCE-410FF-BDF4A-F6EFA-10934', '85DE7-47BDB-143CA-A3A92-2BF21', '3DF1B-555A0-9F328-50959-080D3', '96351-66C92-53AD6-B62AB-F6DFE', 'A79A5-4AE5B-6577C-E8E9F-0FA54', '380F3-DF516-ECBF2-13557-5261C',
-             'D4AFF-C3E8B-B8F2D-BFD1E-B172C', 'AA67C-61793-2B088-2DC89-3F8AE', 'BD567-9E925-854CF-4C85E-6A114', '85B78-481EC-ED96F-5EA7B-377FA', 'D4C58-EC30E-7AE0A-40318-C1077', '04421-2964D-62C42-88826-FEC16',
-             '0636C-AE645-D472A-3E1F5-45E7F', '26114-9171B-880AC-AF96C-AB6C3', '184F3-7ED77-583FD-16AF5-15DDD', '54D57-53D7A-F320E-C6159-A77F8', '54D59-E25BC-D12CF-81F5B-2F9A8']) 
 
 sampleTxt = [('https://new.reddit.com/r/MagicArena/comments/1akxex1/streets_of_new_capenna_prerelease_arena_codes/',['C2296-9F534-0C8CD-ABFD6-70EC7', 'B86FE-715E9-F3A1D-869DD-388D4', 'C22DF-5A380-E3355-F1DAC-BB64F', 'C4BE5-95C57-95356-79629-0227F', 'C3FB1-3AC79-8C81F-49393-DE536'])]
 sampleHard = [('https://new.reddit.com/r/MagicArena/comments/1aiqhnj/people_still_like_codes_hint_assassins_creed/', [])]
@@ -106,7 +109,9 @@ def singleRedditTest(sample, optimisticMode=False, n=1, debug=0):
     
     totalCodes = [[], [], []]
     for response in responses:
-        _, _, _, content, contentType = response
+        source, title, _, content, contentType = response
+        headline = f'New {source} Post - Title: {title} - Content Type: {contentType}'
+        if debug >= 2: print(headline)
         ocrCodes, postCodes, codes = processTest(content, contentType, optimisticMode, n, debug)
         if debug >= 2:
             print(f'ImageOCR codes: {ocrCodes}')
@@ -165,7 +170,21 @@ def singleFileTest(path, optimisticMode=False, n=1, debug=0):
 def flatten(xss):
     return [x for xs in xss for x in xs]
     
+
 '''
+
+Updated tests, default params, 2 threads: 
+    
+> Found 55 codes out of 88 (OCR)
+> Found 68 codes out of 88 (PostProcess)
+> Found 78 codes out of 88 (Retrial)
+> Ratio: 88.6%
+Elapsed time: 295.96s
+
+'''
+
+'''
+
 Some quick tests
     
 Config | Accuracy | Time | Comments
@@ -192,3 +211,5 @@ Default | 38/40 | 210s | 2 threads
 Default | 38/40 | 160s | 3 threads
 
 '''
+
+

@@ -1,6 +1,7 @@
 import pytesseract
 import coderegex
 from constants import HORIZONTAL_PSM, VERTICAL_PSM
+import logging
 import configparser
 
 config = configparser.ConfigParser()
@@ -28,7 +29,7 @@ def parseImage(img):
     try:
         ocr_text = pytesseract.image_to_string(img, config=customPsm, timeout=scan_timeout)
     except RuntimeError as error:
-        if str(error) != 'Tesseract process timeout': print(str(error))
+        if str(error) != 'Tesseract process timeout': logging.debug(str(error))
 
     #print(ocr_text)
     matches = coderegex.findCode(ocr_text)
