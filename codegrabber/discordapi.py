@@ -40,6 +40,8 @@ def listenToDiscord(postsQueue):
                 lastMsgIdChannel = pollChannel(channelId, guildId[channelId], readeableName[channelId], lastMsgId[channelId], postsQueue)
             except Exception as e:
                 logging.debug(str(e))
+                continue
+            
             lastMsgId[channelId] = lastMsgIdChannel
                         
                         

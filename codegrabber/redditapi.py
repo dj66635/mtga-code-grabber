@@ -27,6 +27,7 @@ def listenToReddit(postsQueue):
             responses = readSubmission(submission)
         except Exception as e:
             logging.debug(str(e))
+            continue
             
         for response in responses:
             descriptiveName, title, url, content, contentType = response

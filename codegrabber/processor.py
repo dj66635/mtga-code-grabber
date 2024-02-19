@@ -31,6 +31,7 @@ def process(source, title, url, content, contentType):
             codes = set([codepostprocessor.postProcess(code) for code in codes])
         except Exception as e:
             logging.debug(str(e))
+            return
                     
     elif contentType == TXT:
         print('  Looking for codes...')
